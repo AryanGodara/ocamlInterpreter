@@ -117,5 +117,17 @@ module Scanner = struct
     let value = String.sub scanner.source scanner.start (scanner.current - scanner.start) in
     addTokenLiteral scanner TokenType.NUMBER value;
     ()
+
+  
+  let identifier (scanner : t) : unit =
+    while isAlphaNumeric (peek scanner) do
+      advance scanner |> ignore;
+    done;
+    let tokenType = match Hashtbl.find_opt Token.keywords (String.sub scanner.source scanner.start (scanner.current - scanner.start)) with
+    | Some keyword -> keyword
+    | None -> TokenType.IDENTIFIER
+  in
+    addToken scanner tokenType;
+    ()
     
 end
